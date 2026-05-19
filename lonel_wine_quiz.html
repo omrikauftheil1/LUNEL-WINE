@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>חידון יין לונל 🍷</title>
+<link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@300;400;500;700&family=Heebo:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --wine: #6B1E2E;
+    --wine-deep: #3D0A14;
+    --wine-light: #A0304A;
+    --gold: #C9A84C;
+    --gold-light: #E8C97A;
+    --cream: #F7F0E6;
+    --cream-dark: #EDE3D4;
+    --text: #1A0A0F;
+    --text-muted: #6B4F5A;
+    --bg: #0E0408;
+    --surface: #1A0810;
+    --surface2: #240E18;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Heebo', sans-serif;
+    background: var(--bg);
+    color: var(--cream);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* === BACKGROUND === */
+  .bg-texture {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background:
+      radial-gradient(ellipse 80% 60% at 50% -10%, rgba(107,30,46,0.45) 0%, transparent 70%),
+      radial-gradient(ellipse 50% 40% at 80% 80%, rgba(62,10,20,0.6) 0%, transparent 60%);
+  }
+
+  .grain {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: 0.04;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* === LAYOUT === */
+  #app {
+    position: relative; z-index: 1;
+    min-height: 100vh;
+    display: flex; flex-direction: column; align-items: center;
+    padding: 2rem 1.25rem 4rem;
+  }
+
+  /* === HEADER === */
+  .logo-area {
+    text-align: center; margin-bottom: 2.5rem; animation: fadeDown 0.8s ease both;
+  }
+  .logo-line {
+    width: 60px; height: 1px; background: var(--gold); margin: 0 auto 1.2rem;
+  }
+  .logo-title {
+    font-family: 'Frank Ruhl Libre', serif;
+    font-size: clamp(2.2rem, 8vw, 3.5rem);
+    font-weight: 700; letter-spacing: -0.01em;
+    color: var(--cream); line-height: 1;
+    margin-bottom: 0.4rem;
+  }
+  .logo-sub {
+    font-size: 0.8rem; letter-spacing: 0.18em;
+    color: var(--gold); text-transform: uppercase; font-weight: 300;
+  }
+
+  /* === SCREENS === */
+  .screen { width: 100%; max-width: 480px; animation: fadeUp 0.5s ease both; }
+  .screen-hidden { display: none !important; }
+
+  /* === CARD === */
+  .card {
+    background: var(--surface);
+    border: 0.5px solid rgba(201,168,76,0.2);
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  /* === START SCREEN === */
+  .welcome-text {
+    font-family: 'Frank Ruhl Libre', serif;
+    font-size: 1.35rem; font-weight: 400; line-height: 1.5;
+    color: var(--cream); margin-bottom: 0.75rem;
+  }
+  .welcome-sub {
+    font-size: 0.85rem; color: var(--text-muted);
+    line-height: 1.7; margin-bottom: 1.25rem;
+  }
+  .rules-list {
+    list-style: none; display: flex; flex-direction: column; gap: 8px; margin-bottom: 1.5rem;
+  }
+  .rules-list li {
+    font-size: 0.82rem; color: var(--cream); opacity: 0.75;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .rules-list li::before {
+    content: ''; width: 5px; height: 5px; border-radius: 50%;
+    background: var(--gold); flex-shrink: 0;
+  }
+
+  .name-field {
+    width: 100%; padding: 12px 16px;
+    background: var(--surface2); border: 0.5px solid rgba(201,168,76,0.25);
+    border-radius: 10px; color: var(--cream); font-size: 1rem;
+    font-family: 'Heebo', sans-serif; text-align: right;
+    outline: none; margin-bottom: 12px;
+    transition: border-color 0.2s;
+  }
+  .name-field:focus { border-color: rgba(201,168,76,0.6); }
+  .name-field::placeholder { color: rgba(247,240,230,0.3); }
+
+  .btn-primary {
+    width: 100%; padding: 14px;
+    background: var(--gold); color: var(--wine-deep);
+    border: none; border-radius: 10px;
+    font-family: 'Heebo', sans-serif;
+    font-size: 1rem; font-weight: 500; cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    letter-spacing: 0.02em;
+  }
+  .btn-primary:hover { background: var(--gold-light); }
+  .btn-primary:active { transform: scale(0.98); }
+
+  /* === LEADERBOARD === */
+  .lb-title {
+    font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 10px; font-weight: 400;
+  }
+  .lb-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 12px; border-radius: 8px;
+    background: var(--surface2); margin-bottom: 6px;
+  }
+  .lb-rank { font-size: 1rem; width: 24px; text-align: center; }
+  .lb-name { flex: 1; font-size: 0.88rem; color: var(--cream); }
+  .lb-score { font-size: 0.88rem; font-weight: 500; color: var(--gold); }
+
+  /* === QUIZ SCREEN === */
+  .quiz-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 0.75rem;
+  }
+  .q-counter { font-size: 0.75rem; color: var(--gold); letter-spacing: 0.08em; }
+  .timer-display { font-size: 0.75rem; color: rgba(247,240,230,0.5); }
+
+  .progress-bg {
+    height: 3px; background: rgba(255,255,255,0.08);
+    border-radius: 2px; margin-bottom: 1.25rem; overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%; background: var(--gold);
+    border-radius: 2px; transition: width 0.4s ease;
+  }
+
+  .q-text {
+    font-family: 'Frank Ruhl Libre', serif;
+    font-size: 1.2rem; font-weight: 400; line-height: 1.55;
+    color: var(--cream); margin-bottom: 1.1rem;
+  }
+
+  .options { display: flex; flex-direction: column; gap: 8px; }
+  .opt {
+    padding: 11px 14px;
+    background: var(--surface2);
+    border: 0.5px solid rgba(247,240,230,0.1);
+    border-radius: 10px; color: var(--cream);
+    font-size: 0.9rem; text-align: right; cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+    font-family: 'Heebo', sans-serif;
+  }
+  .opt:hover:not(:disabled) {
+    border-color: rgba(201,168,76,0.4);
+    background: rgba(201,168,76,0.06);
+  }
+  .opt:disabled { cursor: default; }
+  .opt.correct {
+    background: rgba(74,130,40,0.2);
+    border-color: #6aaa30; color: #a8e06a;
+  }
+  .opt.wrong {
+    background: rgba(160,48,74,0.25);
+    border-color: var(--wine-light); color: #e08898;
+  }
+  .opt.reveal {
+    background: rgba(74,130,40,0.12);
+    border-color: rgba(106,170,48,0.5); color: #6aaa30;
+  }
+
+  .explain-box {
+    margin-top: 10px; padding: 12px 14px;
+    background: rgba(201,168,76,0.06);
+    border-right: 2px solid var(--gold);
+    border-radius: 8px; font-size: 0.82rem;
+    color: rgba(247,240,230,0.75); line-height: 1.65;
+  }
+
+  .btn-next {
+    width: 100%; margin-top: 12px; padding: 12px;
+    background: transparent; border: 0.5px solid rgba(201,168,76,0.35);
+    border-radius: 10px; color: var(--gold);
+    font-family: 'Heebo', sans-serif; font-size: 0.9rem;
+    cursor: pointer; transition: background 0.2s;
+  }
+  .btn-next:hover { background: rgba(201,168,76,0.08); }
+
+  /* === STATS BAR === */
+  .stats-bar {
+    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;
+    margin-top: 12px;
+  }
+  .stat-box {
+    background: var(--surface2); border-radius: 10px;
+    padding: 10px; text-align: center;
+  }
+  .stat-val { font-size: 1.4rem; font-weight: 500; color: var(--cream); line-height: 1; }
+  .stat-lbl { font-size: 0.7rem; color: rgba(247,240,230,0.4); margin-top: 3px; }
+
+  /* === RESULT SCREEN === */
+  .result-center { text-align: center; padding: 1rem 0; }
+  .result-emoji { font-size: 3.5rem; margin-bottom: 0.5rem; display: block; }
+  .result-big {
+    font-family: 'Frank Ruhl Libre', serif;
+    font-size: 2.5rem; font-weight: 700; color: var(--gold); line-height: 1;
+  }
+  .result-pts { font-size: 0.85rem; color: rgba(247,240,230,0.5); margin-top: 4px; }
+  .result-msg {
+    font-size: 1rem; color: var(--cream);
+    margin-top: 0.75rem; line-height: 1.5;
+  }
+  .btn-restart {
+    width: 100%; margin-top: 1.25rem; padding: 13px;
+    background: var(--wine); border: 0.5px solid var(--wine-light);
+    border-radius: 10px; color: var(--cream);
+    font-family: 'Heebo', sans-serif; font-size: 0.95rem;
+    cursor: pointer; transition: background 0.2s;
+  }
+  .btn-restart:hover { background: var(--wine-light); }
+
+  /* === ANIMATIONS === */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* === MOBILE TWEAKS === */
+  @media (max-width: 400px) {
+    .q-text { font-size: 1.05rem; }
+    .logo-title { font-size: 2rem; }
+  }
+</style>
+</head>
+<body>
+<div class="bg-texture"></div>
+<div class="grain"></div>
+
+<div id="app">
+  <div class="logo-area">
+    <div class="logo-line"></div>
+    <div class="logo-title">לונל</div>
+    <div class="logo-sub">חידון יין קיץ ׳26</div>
+  </div>
+
+  <!-- START SCREEN -->
+  <div class="screen" id="screen-start">
+    <div class="card">
+      <div class="welcome-text">כמה אתם מכירים את תפריט היין שלנו?</div>
+      <div class="welcome-sub">20 שאלות על היינות בתפריט — אדום, לבן, רוזה וכתום. כל תשובה נכונה = 5 נקודות.</div>
+      <ul class="rules-list">
+        <li>20 שאלות על תפריט לונל קיץ 26</li>
+        <li>5 נקודות לכל תשובה נכונה</li>
+        <li>הסבר קצר אחרי כל שאלה</li>
+        <li>לוח תוצאות משותף לכל הצוות</li>
+      </ul>
+      <input class="name-field" id="player-name" type="text" placeholder="מה שמך?" maxlength="20" />
+      <button class="btn-primary" onclick="startGame()">להתחיל ←</button>
+    </div>
+
+    <div id="lb-start" style="display:none;">
+      <div class="lb-title">לוח תוצאות הצוות</div>
+      <div id="lb-start-rows"></div>
+    </div>
+  </div>
+
+  <!-- QUIZ SCREEN -->
+  <div class="screen screen-hidden" id="screen-quiz">
+    <div class="quiz-header">
+      <span class="q-counter" id="q-counter">שאלה 1 מתוך 20</span>
+      <span class="timer-display" id="timer-display">0:00</span>
+    </div>
+    <div class="progress-bg"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+    <div class="card">
+      <div class="q-text" id="q-text"></div>
+      <div class="options" id="q-options"></div>
+      <div class="explain-box" id="q-explain" style="display:none;"></div>
+      <button class="btn-next" id="btn-next" style="display:none;" onclick="nextQ()">השאלה הבאה ←</button>
+    </div>
+    <div class="stats-bar">
+      <div class="stat-box"><div class="stat-val" id="s-score">0</div><div class="stat-lbl">נקודות</div></div>
+      <div class="stat-box"><div class="stat-val" id="s-correct">0</div><div class="stat-lbl">נכון ✓</div></div>
+      <div class="stat-box"><div class="stat-val" id="s-wrong">0</div><div class="stat-lbl">טעות ✗</div></div>
+    </div>
+  </div>
+
+  <!-- RESULT SCREEN -->
+  <div class="screen screen-hidden" id="screen-result">
+    <div class="card result-center">
+      <span class="result-emoji" id="r-emoji"></span>
+      <div class="result-big" id="r-score"></div>
+      <div class="result-pts">נקודות מתוך 100</div>
+      <div class="result-msg" id="r-msg"></div>
+      <div class="stats-bar" style="margin-top:1rem;">
+        <div class="stat-box"><div class="stat-val" id="r-correct"></div><div class="stat-lbl">נכון</div></div>
+        <div class="stat-box"><div class="stat-val" id="r-wrong"></div><div class="stat-lbl">טעות</div></div>
+        <div class="stat-box"><div class="stat-val" id="r-time"></div><div class="stat-lbl">זמן</div></div>
+      </div>
+      <button class="btn-restart" onclick="restart()">משחק חדש</button>
+    </div>
+    <div id="lb-result-section">
+      <div class="lb-title" style="margin-top:1rem;">לוח תוצאות הצוות</div>
+      <div id="lb-result-rows"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const Q = [
+  {q:"כמה זני ענבים מרכיבים את יין 'סטה וינייה' האיטלקי?",opts:["5","6","7","8"],a:2,ex:"יין סטה וינייה מורכב מ-7 זנים: קורבינה, ברברה, נביולו, סנג'יובזה, מונטפולצ'יאנו, אליאניקו ופרימיטיבו — מסע ברחבי איטליה בבקבוק אחד."},
+  {q:"מה הגוף של 'יין חברים' מהרי הגליל?",opts:["קל","בינוני","מלא","בינוני-קל"],a:2,ex:"יין חברים הוא בלנד של סירה וקברנה סובניון עם גוף מלא — מתאים למי שרוצה יין כבד בכוסות."},
+  {q:"מאיזה אזור בצרפת מגיע הפינו נואר של ברנרד דפה?",opts:["בורדו","רון","בורגון","אלזס"],a:2,ex:"הפינו נואר הוא מבורגון (Bourgogne) — אזור היין הקלאסי לזן זה בצרפת."},
+  {q:"יין מרסלאן רזרבה של גארזון מגיע מאיזו מדינה?",opts:["ארגנטינה","צ'ילה","אורוגוואי","ברזיל"],a:2,ex:"גארזון הוא יקב מאורוגוואי, באזור סן חוזה בדרום המדינה."},
+  {q:"מה הבלנד של יין 'קוט דה רון' של פראטון פרא?",opts:["קברנה ומרלו","סירה ופינו","GSM — גראנש, סירה, מורבדר","שרדונה וסוביניון"],a:2,ex:"GSM הוא הבלנד הקלאסי מעמק הרון: Grenache, Syrah, Mourvèdre."},
+  {q:"כמה חודשים התיישן 'מלבק ארטיזנל' ממצפה רמון בחבית אלון?",opts:["6 חודשים","9 חודשים","12 חודשים","18 חודשים"],a:2,ex:"המלבק מצפה רמון התיישן 12 חודשים בחביות עץ אלון צרפתי."},
+  {q:"מה הגוף של ריוחה רזרבה 'ויניה ריאל' מספרד?",opts:["קל","בינוני-קל","בינוני","מלא"],a:3,ex:"ריוחה רזרבה הוא יין בגוף מלא, עם פירות אדומים בשלים ורמזי עץ אלון. הגדרת 'רזרבה' מחייבת התיישנות מינימלית של שנתיים בחבית."},
+  {q:"'ירדן סירה' הוא סדרת הדגל של איזה יקב?",opts:["יקב כרמל","יקב רמת הגולן","יקב רקאנטי","יקב טבור"],a:1,ex:"ירדן סירה הוא סדרת הדגל של יקב רמת הגולן — אחד מהיינות הישראלים הבולטים ביותר."},
+  {q:"מאיזה כרם מגיע הקברנה סובניון של יקב רקאנטי?",opts:["כרם אודם","כרם שורש","כרם לבנון","כרם גבעת יערים"],a:2,ex:"הקברנה של רקאנטי מגיע מ'כרם לבנון' — כרם ייחודי בצפון הארץ הצופה להרי הלבנון."},
+  {q:"כמה חודשים התיישן קברנה 'כרם לבנון' של רקאנטי?",opts:["9","12","16","24"],a:2,ex:"היין התיישן כ-16 חודשים בחביות עץ אלון צרפתי."},
+  {q:"מה מייחד את רוזה 'פסטוביץ' מהונגריה?",opts:["הוא חצי יבש","הוא ביו-דינאמי","הוא כשר","הוא מענבי גראנש"],a:1,ex:"פסטוביץ' הוא יין ביו-דינאמי — מיוצר לפי עקרונות פילוסופיים של רודולף שטיינר ושיטות חקלאות אורגניות."},
+  {q:"מאיזה מחוז בצרפת מגיע רוזה 'AIX'?",opts:["בורגון","לואר","פרובנס","בורדו"],a:2,ex:"AIX Rosé מגיע ממחוז פרובנס בצרפת — אזור שמתקשר ישירות לשם המסעדה 'לונל' (Lounel)."},
+  {q:"מה הגוף של יין הלבן 'מוסקדה' של קומט ללופ?",opts:["קל","בינוני-קל","בינוני","מלא"],a:1,ex:"מוסקדה הוא יין עם גוף בינוני-קליל, חמיצות מאוזנת וסיומת ארוכה ונעימה."},
+  {q:"ענבי המוסקדה של קומט ללופ מגיעים מכרמים בני כמה שנים?",opts:["30","50","75","100"],a:3,ex:"ענבי המוסקדה מגיעים מחלקת כרם בת 100 שנים!"},
+  {q:"מאיזו מדינה מגיע הסוביניון בלאן 'אסטרולאב'?",opts:["צרפת","אוסטרליה","ניו זילנד","דרום אפריקה"],a:2,ex:"אסטרולאב מגיע מאי הדרומי של ניו זילנד, אזור מרלבורו — ידוע ברחבי העולם בזכות סוביניון בלאן מעולה."},
+  {q:"מה מיוחד בבקבוק הריזלינג הגרמני מהמוזל?",opts:["500 מ\"ל","750 מ\"ל","1 ליטר","מגנום 1.5 ליטר"],a:2,ex:"הריזלינג הגרמני מגיע בבקבוק ליטר — יתרון גדול מבחינת כמות וערך!"},
+  {q:"מהו זן הענבים של שאבלי 'דומיין פורי'?",opts:["פינו גרי","ריזלינג","שרדונה","מוסקדה"],a:2,ex:"שאבלי תמיד עשוי משרדונה — הוא חבל ארץ בבורגון המתמחה ביין לבן יבש ומינרלי."},
+  {q:"מה הגוף של 'לאבה כתום' מיקב רמת הגולן?",opts:["קל","בינוני","מלא","בינוני-מלא"],a:1,ex:"לאבה כתום הוא יין כתום (orange wine) בגוף בינוני, מינרלי, מורכב ונעים לשתייה."},
+  {q:"על מה מתבססת מידת 'העפיצות' ביין?",opts:["רמת הסוכר","ריח הענבים","כמות הטנין","צבע הקליפות"],a:2,ex:"עפיצות היא תחושת היובש שנשארת בפה לאחר שתיית יין אדום, ונגרמת בעיקר מהטנין שבקליפות הענבים ובחביות האלון."},
+  {q:"מה גורם לצבע האדום ביין אדום?",opts:["החרצנים","העץ שבחבית","קליפות הענבים","הסוכר שמתפרק"],a:2,ex:"הצבע האדום מתקבל מקליפות הענבים השחורים/אדומים שתוססות יחד עם העסיס."},
+];
+
+let cur=0, score=0, correct=0, wrong=0, answered=false;
+let playerName="", startTime=null, timerInt=null;
+
+/* ---- Storage (localStorage for cross-device via hosted page) ---- */
+function getLB() {
+  try { return JSON.parse(localStorage.getItem('lonel_lb_26') || '[]'); } catch { return []; }
+}
+function saveLB(lb) {
+  try { localStorage.setItem('lonel_lb_26', JSON.stringify(lb)); } catch {}
+}
+function renderLB(id) {
+  const lb = getLB().sort((a,b)=>b.score-a.score).slice(0,8);
+  const el = document.getElementById(id);
+  if (!el) return;
+  if (!lb.length) { el.innerHTML='<div style="font-size:0.8rem;color:rgba(247,240,230,0.35);padding:8px 0;">אין תוצאות עדיין — היה הראשון!</div>'; return; }
+  const medals = ['🥇','🥈','🥉'];
+  el.innerHTML = lb.map((r,i)=>`
+    <div class="lb-row">
+      <span class="lb-rank">${medals[i]||'#'+(i+1)}</span>
+      <span class="lb-name">${r.name}</span>
+      <span class="lb-score">${r.score}</span>
+    </div>`).join('');
+}
+function showLBIfHas() {
+  const lb = getLB();
+  const el = document.getElementById('lb-start');
+  if (lb.length) { el.style.display='block'; renderLB('lb-start-rows'); }
+}
+
+/* ---- Game flow ---- */
+function startGame() {
+  playerName = document.getElementById('player-name').value.trim() || 'שחקן';
+  cur=0; score=0; correct=0; wrong=0; answered=false;
+  startTime = Date.now();
+  show('screen-quiz');
+  startTimer();
+  renderQ();
+}
+
+function startTimer() {
+  if (timerInt) clearInterval(timerInt);
+  timerInt = setInterval(()=>{
+    const s = Math.floor((Date.now()-startTime)/1000);
+    document.getElementById('timer-display').textContent =
+      Math.floor(s/60)+':'+ String(s%60).padStart(2,'0');
+  }, 500);
+}
+
+function renderQ() {
+  answered = false;
+  const q = Q[cur];
+  document.getElementById('q-counter').textContent = 'שאלה '+(cur+1)+' מתוך '+Q.length;
+  document.getElementById('progress-fill').style.width = ((cur/Q.length)*100)+'%';
+  document.getElementById('q-text').textContent = q.q;
+  document.getElementById('q-explain').style.display = 'none';
+  document.getElementById('btn-next').style.display = 'none';
+  document.getElementById('q-options').innerHTML = q.opts.map((o,i)=>
+    `<button class="opt" onclick="answer(${i})">${o}</button>`
+  ).join('');
+  updateStats();
+}
+
+function answer(idx) {
+  if (answered) return;
+  answered = true;
+  const q = Q[cur];
+  document.querySelectorAll('.opt').forEach(b=>b.disabled=true);
+  if (idx===q.a) { document.querySelectorAll('.opt')[idx].classList.add('correct'); score+=5; correct++; }
+  else { document.querySelectorAll('.opt')[idx].classList.add('wrong'); document.querySelectorAll('.opt')[q.a].classList.add('reveal'); wrong++; }
+  document.getElementById('q-explain').textContent = q.ex;
+  document.getElementById('q-explain').style.display = 'block';
+  const nb = document.getElementById('btn-next');
+  nb.textContent = cur===Q.length-1 ? 'סיום החידון ←' : 'השאלה הבאה ←';
+  nb.style.display = 'block';
+  updateStats();
+}
+
+function nextQ() {
+  cur++;
+  if (cur >= Q.length) { endGame(); return; }
+  renderQ();
+}
+
+function endGame() {
+  clearInterval(timerInt);
+  const totalS = Math.floor((Date.now()-startTime)/1000);
+  const lb = getLB();
+  lb.push({ name: playerName, score, time: totalS, date: new Date().toLocaleDateString('he-IL') });
+  saveLB(lb);
+
+  const pct = correct/Q.length;
+  let emoji, msg;
+  if (pct>=0.9) { emoji='🏆'; msg='מומחה יין! הצוות גאה בך.'; }
+  else if (pct>=0.7) { emoji='🍷'; msg='מאוד טוב! כמעט סומלייה.'; }
+  else if (pct>=0.5) { emoji='🥂'; msg='לא רע — יש עוד מקום לגדול!'; }
+  else { emoji='🫧'; msg='כדאי לחזור לחוברת ולנסות שוב 😄'; }
+
+  const m=Math.floor(totalS/60), s=totalS%60;
+  document.getElementById('r-emoji').textContent = emoji;
+  document.getElementById('r-score').textContent = score;
+  document.getElementById('r-msg').textContent = msg;
+  document.getElementById('r-correct').textContent = correct;
+  document.getElementById('r-wrong').textContent = wrong;
+  document.getElementById('r-time').textContent = m+':'+String(s).padStart(2,'0');
+  renderLB('lb-result-rows');
+  show('screen-result');
+}
+
+function restart() { show('screen-start'); showLBIfHas(); }
+
+function updateStats() {
+  document.getElementById('s-score').textContent = score;
+  document.getElementById('s-correct').textContent = correct;
+  document.getElementById('s-wrong').textContent = wrong;
+}
+
+function show(id) {
+  ['screen-start','screen-quiz','screen-result'].forEach(s=>{
+    document.getElementById(s).classList.toggle('screen-hidden', s!==id);
+  });
+}
+
+/* init */
+showLBIfHas();
+document.getElementById('player-name').addEventListener('keydown', e=>{ if(e.key==='Enter') startGame(); });
+</script>
+</body>
+</html>
